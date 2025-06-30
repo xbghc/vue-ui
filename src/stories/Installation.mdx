@@ -1,0 +1,159 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Guide/Installation" />
+
+# 🔧 安装指南
+
+欢迎使用 @xbghc/vue-ui！这是一个现代化的 Vue 3 + TypeScript 组件库。
+
+## 📋 环境要求
+
+- **Node.js**: >= 16.0.0
+- **Vue**: >= 3.0.0
+- **TypeScript**: >= 4.5.0 (可选，但推荐)
+
+## 📦 安装方式
+
+### npm 安装
+
+```bash
+npm install @xbghc/vue-ui
+```
+
+### yarn 安装
+
+```bash
+yarn add @xbghc/vue-ui
+```
+
+### pnpm 安装
+
+```bash
+pnpm add @xbghc/vue-ui
+```
+
+### CDN 导入
+
+```html
+<!-- 开发版本 -->
+<script src="https://unpkg.com/@xbghc/vue-ui/dist/index.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@xbghc/vue-ui/dist/vue-ui.css" />
+
+<!-- 生产版本 -->
+<script src="https://unpkg.com/@xbghc/vue-ui@latest/dist/index.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@xbghc/vue-ui@latest/dist/vue-ui.css" />
+```
+
+## ⚙️ 项目集成
+
+### 完整导入
+
+```typescript
+// main.ts
+import { createApp } from 'vue';
+import XbghcVueUI from '@xbghc/vue-ui';
+import '@xbghc/vue-ui/dist/vue-ui.css';
+import App from './App.vue';
+
+const app = createApp(App);
+app.use(XbghcVueUI);
+app.mount('#app');
+```
+
+### 按需导入 (推荐)
+
+```typescript
+// 在组件中按需导入
+import { ToolTip } from '@xbghc/vue-ui';
+// 样式会自动导入，无需手动引入
+```
+
+## 🔧 TypeScript 配置
+
+确保您的 `tsconfig.json` 包含以下配置：
+
+```json
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}
+```
+
+## ✅ 验证安装
+
+创建一个简单的测试页面：
+
+```vue
+<template>
+  <div>
+    <ToolTip content="Hello World!">
+      <template #trigger>
+        <button>Hover me</button>
+      </template>
+    </ToolTip>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ToolTip } from '@xbghc/vue-ui';
+</script>
+```
+
+如果悬停按钮时显示 tooltip，说明安装成功！
+
+## 🎨 样式配置
+
+### 自动导入样式
+
+按需导入时，样式会自动加载，无需手动导入。
+
+### 自定义样式
+
+```scss
+// 覆盖默认样式变量
+:root {
+  --tooltip-bg-color: #333;
+  --tooltip-text-color: #fff;
+  --tooltip-border-radius: 6px;
+}
+```
+
+## 🚨 常见问题
+
+### 样式不显示
+
+确保已经导入 CSS 文件：
+
+```typescript
+import '@xbghc/vue-ui/dist/vue-ui.css';
+```
+
+### TypeScript 错误
+
+确保项目支持 Vue 3 的类型：
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
+  }
+}
+```
+
+## 🎯 浏览器支持
+
+- Chrome >= 87
+- Firefox >= 78
+- Safari >= 14
+- Edge >= 88
+
+## 📚 下一步
+
+- [快速开始](/docs/guide-getting-started--docs) - 学习基础使用
+- [导入方式](/docs/guide-import-methods--docs) - 了解更多导入选项
+- [组件文档](/docs/components-tooltip--docs) - 查看完整 API

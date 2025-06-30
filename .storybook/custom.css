@@ -1,0 +1,61 @@
+/* Storybook 自定义样式 - 仅修改鼠标形状 */
+
+/* 改善展开/收起图标的鼠标形状 */
+.docblock-argstable-head button,
+.docblock-argstable-body button,
+.docblock-expandable button,
+[data-testid='collapsible-toggle'],
+button[aria-expanded],
+button[aria-label*='展开'],
+button[aria-label*='收起'],
+button[aria-label*='expand'],
+button[aria-label*='collapse'] {
+  cursor: pointer !important;
+}
+
+/* 改善 Storybook 文档中的按钮鼠标形状 */
+.sbdocs .docblock-code-toggle,
+.sbdocs button[title*='展开'],
+.sbdocs button[title*='收起'],
+.sbdocs button[title*='Show'],
+.sbdocs button[title*='Hide'] {
+  cursor: pointer !important;
+}
+
+/* 改善表格中的交互元素鼠标形状 */
+.docblock-argstable th button,
+.docblock-argstable td button {
+  cursor: pointer !important;
+}
+
+/* 改善侧边栏的交互鼠标形状 */
+.sidebar-item button,
+.sidebar-item a {
+  cursor: pointer !important;
+}
+
+/* 改善控制面板的按钮鼠标形状 */
+[data-testid*='control'] button {
+  cursor: pointer !important;
+}
+
+/* 改善代码块的展开按钮鼠标形状 */
+.prismjs button,
+.docblock-code-toggle {
+  cursor: pointer !important;
+}
+
+/* 改善所有可点击元素的默认鼠标形状 */
+[role='button']:not(button),
+[tabindex='0']:not(input):not(textarea):not(select) {
+  cursor: pointer !important;
+}
+
+/* 确保所有按钮都有合适的鼠标形状 */
+button:not([disabled]) {
+  cursor: pointer !important;
+}
+
+button[disabled] {
+  cursor: not-allowed !important;
+}

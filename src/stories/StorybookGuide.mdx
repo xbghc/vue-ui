@@ -1,0 +1,555 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Development/Storybook Guide" />
+
+# 📖 Storybook 开发指南
+
+Storybook 是一个用于构建 UI 组件的工具，它提供了隔离开发环境，让你可以独立地开发、测试和展示组件。
+
+## 🚀 快速开始
+
+### 启动 Storybook
+
+```bash
+npm run storybook
+```
+
+启动后访问：http://localhost:6006
+
+### 构建静态文档
+
+```bash
+npm run build-storybook
+```
+
+构建结果将输出到 `storybook-static/` 目录。
+
+## 📁 Storybook 文件结构
+
+```
+.storybook/
+├── main.ts          # 主配置文件
+└── preview.ts       # 预览配置
+
+src/
+├── components/ToolTip/
+│   └── ToolTip.stories.ts   # ToolTip 组件的故事
+└── stories/
+    ├── Installation.mdx     # 安装指南
+    ├── GettingStarted.mdx   # 快速开始
+    ├── ImportMethods.mdx    # 导入方式
+    ├── Development.mdx      # 开发环境搭建
+    ├── CodeStandards.mdx    # 代码规范
+    ├── Contributing.mdx     # 贡献指南
+    └── StorybookGuide.mdx   # 本文档
+```
+
+## 📖 Story 文件解析
+
+### 基本结构
+
+```typescript
+// ToolTip.stories.ts
+import type { Meta, StoryObj } from '@storybook/vue3';
+import { ToolTip } from './index';
+
+const meta: Meta<typeof ToolTip> = {
+  title: 'Components/ToolTip', // 侧边栏中的分组和名称
+  component: ToolTip, // 组件
+  parameters: {
+    layout: 'centered', // 布局模式
+    docs: {
+      description: {
+        component: '组件描述',
+      },
+    },
+  },
+  argTypes: {
+    // 控件配置
+    content: {
+      control: 'text',
+      description: '提示内容',
+      table: {
+        category: 'Props',
+        type: { summary: 'string' },
+        defaultValue: { summary: "''" },
+      },
+    },
+  },
+  args: {
+    content: 'Default tooltip content',
+  },
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// 默认故事
+export const Default: Story = {
+  render: args => ({
+    components: { ToolTip },
+    setup() {
+      return { args };
+    },
+    template: `
+      <ToolTip v-bind="args">
+        <template #trigger>
+          <button>Hover me</button>
+        </template>
+      </ToolTip>
+    `,
+  }),
+};
+```
+
+## 🎮 Controls 控件类型
+
+### 常用控件
+
+```typescript
+argTypes: {
+  // 文本输入
+  text: { control: 'text' },
+
+  // 数字输入
+  number: {
+    control: {
+      type: 'number',
+      min: 0,
+      max: 100,
+      step: 1
+    }
+  },
+
+  // 布尔值
+  boolean: { control: 'boolean' },
+
+  // 选择器
+  select: {
+    control: 'select',
+    options: ['option1', 'option2']
+  },
+
+  // 单选
+  radio: {
+    control: 'radio',
+    options: ['A', 'B', 'C']
+  },
+
+  // 颜色选择器
+  color: { control: 'color' },
+
+  // 日期选择器
+  date: { control: 'date' },
+
+  // 范围滑块
+  range: {
+    control: {
+      type: 'range',
+      min: 0,
+      max: 100,
+      step: 1
+    }
+  }
+}
+```
+
+## 📚 Story 类型
+
+### 1. 基础 Story
+
+```typescript
+export const Basic: Story = {
+  args: {
+    content: '基础提示',
+  },
+};
+```
+
+### 2. 带模板的 Story
+
+```typescript
+export const WithTemplate: Story = {
+  render: args => ({
+    components: { ToolTip },
+    setup() {
+      return { args };
+    },
+    template: `
+      <ToolTip v-bind="args">
+        <template #trigger>
+          <button style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px;">
+            悬停我
+          </button>
+        </template>
+      </ToolTip>
+    `,
+  }),
+};
+```
+
+### 3. 多个实例的 Story
+
+```typescript
+export const AllPlacements: Story = {
+  render: () => ({
+    components: { ToolTip },
+    setup() {
+      const placements = [
+        'top',
+        'top-start',
+        'top-end',
+        'bottom',
+        'bottom-start',
+        'bottom-end',
+        'left',
+        'left-start',
+        'left-end',
+        'right',
+        'right-start',
+        'right-end',
+      ];
+      return { placements };
+    },
+    template: `
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 60px;">
+        <ToolTip
+          v-for="placement in placements"
+          :key="placement"
+          :content="placement"
+          :placement="placement"
+          :show-arrow="true"
+        >
+          <template #trigger>
+            <button style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 4px;">
+              {{ placement }}
+            </button>
+          </template>
+        </ToolTip>
+      </div>
+    `,
+  }),
+};
+```
+
+## 🎨 装饰器 (Decorators)
+
+### 全局装饰器
+
+```typescript
+// .storybook/preview.ts
+export const decorators = [
+  story => ({
+    components: { story },
+    template: `
+      <div style="padding: 3rem;">
+        <story />
+      </div>
+    `,
+  }),
+];
+```
+
+### Story 级装饰器
+
+```typescript
+export const Decorated: Story = {
+  decorators: [
+    () => ({
+      template: `
+        <div style="background: #f0f0f0; padding: 2rem; border-radius: 8px;">
+          <story />
+        </div>
+      `,
+    }),
+  ],
+};
+```
+
+## 📖 文档功能
+
+### 自动文档生成
+
+Storybook 会自动生成：
+
+- 组件 API 文档
+- Props 类型和默认值
+- 事件列表
+- 插槽信息
+- 使用示例
+
+### 增强 ArgTypes 配置
+
+```typescript
+argTypes: {
+  content: {
+    control: 'text',
+    description: 'Tooltip 内容文本，与默认插槽二选一',
+    table: {
+      category: 'Props',
+      type: {
+        summary: 'string',
+        detail: 'string | undefined'
+      },
+      defaultValue: { summary: "''" },
+    },
+  },
+  placement: {
+    control: 'select',
+    options: Object.values(ToolTipPlacement),
+    description: 'Tooltip 显示位置，支持 12 种位置',
+    table: {
+      category: 'Props',
+      type: {
+        summary: 'ToolTipPlacement',
+        detail: "'top' | 'top-start' | 'top-end' | ...",
+      },
+      defaultValue: { summary: "'top'" },
+    },
+  },
+}
+```
+
+### MDX 文档页面
+
+```mdx
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Guide/Installation" />
+
+# 安装指南
+
+这是一个 MDX 文档页面，支持：
+
+- Markdown 语法
+- React 组件
+- 代码高亮
+- 交互式元素
+```
+
+## 🔧 常用插件
+
+### 已安装的插件
+
+- `@storybook/addon-essentials` - 基础插件包
+- `@storybook/addon-interactions` - 交互测试
+- `@storybook/addon-links` - 链接功能
+
+### 插件功能
+
+- **Controls** - 动态修改 props
+- **Actions** - 事件日志
+- **Docs** - 自动文档生成
+- **Viewport** - 响应式测试
+- **Backgrounds** - 背景切换
+- **Measure** - 尺寸测量
+- **Outline** - 元素轮廓
+
+## 🎯 最佳实践
+
+### 1. Story 命名
+
+```typescript
+// ✅ 好的命名
+export const Default = {};
+export const WithLongContent = {};
+export const DifferentPlacements = {};
+export const DisabledState = {};
+
+// ❌ 避免的命名
+export const Story1 = {};
+export const test = {};
+export const temp = {};
+```
+
+### 2. Args 组织
+
+```typescript
+// ✅ 合理的默认值
+export const Default: Story = {
+  args: {
+    content: 'Hello World',
+    placement: 'top',
+    showArrow: true,
+    offset: 8,
+  },
+};
+
+// ✅ 专注单一变化
+export const NoArrow: Story = {
+  args: {
+    content: 'Tooltip without arrow',
+    showArrow: false,
+  },
+};
+```
+
+### 3. 文档描述
+
+```typescript
+argTypes: {
+  placement: {
+    description: 'Tooltip 显示位置，支持 12 种位置',
+    control: 'select',
+    options: ['top', 'bottom', 'left', 'right', /*...*/],
+    table: {
+      type: { summary: 'ToolTipPlacement' },
+      defaultValue: { summary: "'top'" },
+      category: 'Props',
+    }
+  }
+}
+```
+
+### 4. 组织 Stories
+
+```typescript
+// 按功能分组
+export const Basic = {};
+export const WithCustomContent = {};
+
+export const TopPlacement = {};
+export const BottomPlacement = {};
+export const LeftPlacement = {};
+export const RightPlacement = {};
+
+export const Disabled = {};
+export const NoArrow = {};
+export const CustomOffset = {};
+```
+
+## 🚀 进阶用法
+
+### 1. 交互测试
+
+```typescript
+import { userEvent, within } from '@storybook/testing-library';
+import { expect } from '@storybook/jest';
+
+export const Interactive: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button');
+
+    // 模拟悬停
+    await userEvent.hover(button);
+
+    // 检查 tooltip 是否显示
+    const tooltip = canvas.getByRole('tooltip');
+    await expect(tooltip).toBeInTheDocument();
+  },
+};
+```
+
+### 2. 主题切换
+
+```typescript
+// .storybook/preview.ts
+export const parameters = {
+  backgrounds: {
+    values: [
+      { name: 'light', value: '#ffffff' },
+      { name: 'dark', value: '#333333' },
+      { name: 'gray', value: '#f5f5f5' },
+    ],
+    default: 'light',
+  },
+};
+```
+
+### 3. 自定义参数
+
+```typescript
+export const WithCustomParams: Story = {
+  parameters: {
+    layout: 'fullscreen',
+    backgrounds: { disable: true },
+    docs: {
+      description: {
+        story: '这是一个特殊的故事，展示了自定义参数的使用。',
+      },
+    },
+  },
+};
+```
+
+## 📱 响应式测试
+
+### 预设视口
+
+```typescript
+export const Mobile: Story = {
+  parameters: {
+    viewport: {
+      viewports: {
+        mobile: {
+          name: 'Mobile',
+          styles: { width: '375px', height: '667px' },
+        },
+        tablet: {
+          name: 'Tablet',
+          styles: { width: '768px', height: '1024px' },
+        },
+      },
+      defaultViewport: 'mobile',
+    },
+  },
+};
+```
+
+## 🎨 组件开发工作流
+
+### 1. 创建基础 Story
+
+```typescript
+// 先创建最简单的 Story
+export const Default: Story = {};
+```
+
+### 2. 添加 Controls
+
+```typescript
+// 添加 argTypes 配置
+argTypes: {
+  content: { control: 'text' },
+  placement: { control: 'select', options: [...] },
+}
+```
+
+### 3. 创建变体 Stories
+
+```typescript
+// 为不同用例创建 Stories
+export const LongContent: Story = {
+  args: { content: '这是一个很长很长的提示内容...' },
+};
+
+export const CustomPlacement: Story = {
+  args: { placement: 'bottom-start' },
+};
+```
+
+### 4. 优化文档
+
+```typescript
+// 添加详细的描述和分类
+table: {
+  category: 'Props',
+  type: { summary: 'string' },
+  defaultValue: { summary: "''" },
+}
+```
+
+## 🔗 有用的链接
+
+- [Storybook 官方文档](https://storybook.js.org/docs)
+- [Vue3 + Storybook 指南](https://storybook.js.org/docs/vue/get-started/introduction)
+- [Storybook 插件市场](https://storybook.js.org/addons)
+- [MDX 文档格式](https://storybook.js.org/docs/vue/writing-docs/mdx)
+
+## 📚 相关文档
+
+- [开发环境搭建](/docs/development-setup--docs) - 本地开发配置
+- [代码规范](/docs/development-code-standards--docs) - ESLint、Prettier 配置
+- [贡献指南](/docs/development-contributing--docs) - 如何参与项目开发

@@ -1,0 +1,313 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Guide/Import Methods" />
+
+# 📦 导入方式指南
+
+本组件库支持多种导入方式，以满足不同的使用需求和项目规模。
+
+## 1. 完整导入
+
+适用于小型项目或需要使用大部分组件的场景。
+
+### 全量导入所有组件
+
+```typescript
+// main.ts
+import { createApp } from 'vue';
+import XbghcVueUI from '@xbghc/vue-ui';
+import '@xbghc/vue-ui/dist/vue-ui.css';
+import App from './App.vue';
+
+const app = createApp(App);
+app.use(XbghcVueUI); // 自动注册所有组件并导入所有样式
+app.mount('#app');
+```
+
+**特点:**
+
+- ✅ 简单方便，一次配置全局可用
+- ✅ 无需在每个组件中单独导入
+- ❌ 打包体积较大，包含所有组件代码
+
+## 2. 按需导入 (推荐)
+
+适用于大型项目，能够最小化打包体积。
+
+### 导入单个组件
+
+```vue
+<template>
+  <ToolTip content="Hello World">
+    <template #trigger>
+      <button>Hover me</button>
+    </template>
+  </ToolTip>
+</template>
+
+<script setup lang="ts">
+import { ToolTip } from '@xbghc/vue-ui';
+// 样式会自动导入，无需手动引入
+</script>
+```
+
+### 导入多个组件
+
+```vue
+<script setup lang="ts">
+import { ToolTip, Button, Modal } from '@xbghc/vue-ui';
+</script>
+```
+
+### 单独注册组件
+
+```typescript
+// main.ts
+import { createApp } from 'vue';
+import { ToolTip } from '@xbghc/vue-ui';
+import App from './App.vue';
+
+const app = createApp(App);
+app.use(ToolTip); // 单独注册 ToolTip 组件
+app.mount('#app');
+```
+
+**特点:**
+
+- ✅ 最小打包体积，只包含使用的组件
+- ✅ 支持 Tree Shaking
+- ✅ 样式自动导入
+- ❌ 需要在每个组件中单独导入
+
+## 3. TypeScript 类型导入
+
+### 导入组件类型定义
+
+```typescript
+import type { ToolTipProps, ToolTipPlacement } from '@xbghc/vue-ui';
+
+// 使用类型
+const config: ToolTipProps = {
+  content: 'Hello',
+  placement: 'top',
+  showArrow: true,
+};
+
+// 枚举类型
+const placement: ToolTipPlacement = 'bottom-start';
+```
+
+### 组件实例类型
+
+```vue
+<template>
+  <ToolTip ref="tooltipRef" content="示例">
+    <template #trigger>
+      <button @click="showTooltip">显示</button>
+    </template>
+  </ToolTip>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { ToolTip } from '@xbghc/vue-ui';
+
+const tooltipRef = ref<InstanceType<typeof ToolTip>>();
+
+const showTooltip = () => {
+  tooltipRef.value?.show(); // ✅ 类型安全的方法调用
+};
+</script>
+```
+
+## 4. Composables 导入
+
+### 导入组合式函数
+
+```typescript
+import { useToolTip } from '@xbghc/vue-ui';
+
+// 在 Composition API 中使用
+export default {
+  setup() {
+    const props = { content: 'Hello', placement: 'top' };
+    const emit = defineEmits(['show', 'hide']);
+
+    const { show, hide, updatePosition } = useToolTip(props, emit);
+    return { show, hide, updatePosition };
+  },
+};
+```
+
+## 5. 直接组件导入
+
+适用于需要最小打包体积的场景。
+
+```typescript
+// 这种方式只会打包 ToolTip 组件及其依赖
+import ToolTip from '@xbghc/vue-ui/components/ToolTip';
+```
+
+**注意:** 这种方式需要手动导入样式：
+
+```typescript
+import '@xbghc/vue-ui/components/ToolTip/tooltip.css';
+```
+
+## 6. CDN 导入
+
+适用于原型开发或不使用构建工具的项目。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- 导入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/@xbghc/vue-ui/dist/vue-ui.css" />
+  </head>
+  <body>
+    <div id="app">
+      <tool-tip content="Hello World">
+        <template #trigger>
+          <button>Hover me</button>
+        </template>
+      </tool-tip>
+    </div>
+
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- 组件库 -->
+    <script src="https://unpkg.com/@xbghc/vue-ui/dist/index.umd.js"></script>
+
+    <script>
+      const { createApp } = Vue;
+      const { XbghcVueUI } = window;
+
+      createApp({}).use(XbghcVueUI).mount('#app');
+    </script>
+  </body>
+</html>
+```
+
+## 7. 样式导入选项
+
+### 自动样式导入 (推荐)
+
+使用按需导入时，组件样式会自动加载：
+
+```typescript
+import { ToolTip } from '@xbghc/vue-ui';
+// 样式自动导入，无需额外配置
+```
+
+### 手动样式导入
+
+如果需要更精细的控制：
+
+```typescript
+// 导入所有样式
+import '@xbghc/vue-ui/dist/vue-ui.css';
+
+// 导入单个组件样式
+import '@xbghc/vue-ui/components/ToolTip/tooltip.css';
+```
+
+### 自定义主题
+
+```scss
+// 在导入组件库样式之前定义自定义变量
+:root {
+  --tooltip-bg-color: #333;
+  --tooltip-text-color: #fff;
+  --tooltip-border-radius: 6px;
+}
+
+// 然后导入组件库样式
+@import '@xbghc/vue-ui/dist/vue-ui.css';
+```
+
+## 🎯 Tree Shaking 支持
+
+本组件库完全支持 Tree Shaking：
+
+- ✅ 只导入使用的组件代码
+- ✅ 只导入使用组件的样式
+- ✅ 只导入使用的工具函数和类型
+- ✅ 自动移除未使用的代码
+
+### 验证 Tree Shaking
+
+使用 Webpack Bundle Analyzer 或类似工具查看打包结果：
+
+```bash
+# 安装分析工具
+npm install --save-dev webpack-bundle-analyzer
+
+# 分析打包结果
+npm run build:analyze
+```
+
+## 📋 推荐使用方式
+
+### 小型项目 (< 10 个组件)
+
+```typescript
+// 完整导入，简单便捷
+import XbghcVueUI from '@xbghc/vue-ui';
+app.use(XbghcVueUI);
+```
+
+### 中大型项目 (>= 10 个组件)
+
+```typescript
+// 按需导入，最优打包体积
+import { ToolTip, Button, Modal } from '@xbghc/vue-ui';
+```
+
+### TypeScript 项目
+
+```typescript
+// 导入类型以获得完整的类型支持
+import { ToolTip, type ToolTipProps } from '@xbghc/vue-ui';
+```
+
+### 组件库开发
+
+```typescript
+// 导入 Composables 进行二次开发
+import { useToolTip, type ToolTipProps } from '@xbghc/vue-ui';
+```
+
+## 🔧 构建工具配置
+
+### Vite 配置
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  optimizeDeps: {
+    include: ['@xbghc/vue-ui'],
+  },
+});
+```
+
+### Webpack 配置
+
+```javascript
+// webpack.config.js
+module.exports = {
+  resolve: {
+    alias: {
+      '@xbghc/vue-ui': '@xbghc/vue-ui/dist/index.es.js',
+    },
+  },
+};
+```
+
+## 📚 相关文档
+
+- [安装指南](/docs/guide-installation--docs) - 详细的安装步骤
+- [快速开始](/docs/guide-getting-started--docs) - 第一个示例
+- [ToolTip 组件](/docs/components-tooltip--docs) - 完整 API 文档

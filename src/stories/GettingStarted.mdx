@@ -1,0 +1,227 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Guide/Getting Started" />
+
+# 🚀 快速开始
+
+欢迎使用 @xbghc/vue-ui！本指南将帮助您在几分钟内开始使用我们的 Vue 3 组件库。
+
+## 🎯 第一个示例
+
+### 基础使用
+
+```vue
+<template>
+  <div>
+    <ToolTip content="Hello World!">
+      <template #trigger>
+        <button>悬停查看提示</button>
+      </template>
+    </ToolTip>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ToolTip } from '@xbghc/vue-ui';
+</script>
+```
+
+### 高级用法
+
+```vue
+<template>
+  <div>
+    <ToolTip
+      content="这是一个自定义样式的提示框"
+      placement="top"
+      :show-arrow="true"
+      :hover-delay="500"
+      :offset="10"
+    >
+      <template #trigger>
+        <button>高级提示</button>
+      </template>
+    </ToolTip>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ToolTip } from '@xbghc/vue-ui';
+</script>
+```
+
+## 🧩 核心特性
+
+### 📦 Tree Shaking
+
+支持按需导入，只打包您使用的组件：
+
+```typescript
+import { ToolTip } from '@xbghc/vue-ui';
+// 只有 ToolTip 相关代码会被打包
+```
+
+### 🔒 TypeScript 支持
+
+完整的类型定义，提供最佳开发体验：
+
+```typescript
+import type { ToolTipProps, ToolTipPlacement } from '@xbghc/vue-ui';
+
+// 完整的类型提示和检查
+const placement: ToolTipPlacement = 'top';
+```
+
+### 🎨 主题定制
+
+通过 CSS 变量轻松定制组件样式：
+
+```css
+:root {
+  --tooltip-bg-color: #333;
+  --tooltip-text-color: #fff;
+  --tooltip-border-radius: 6px;
+  --tooltip-arrow-size: 6px;
+}
+```
+
+## 🎨 组件演示
+
+### 在线演示
+
+您现在正在浏览的 Storybook 提供：
+
+- **交互式预览** - 直接看到组件效果
+- **参数调试** - 实时修改 Props 看变化
+- **代码示例** - 可复制的代码片段
+- **响应式测试** - 不同屏幕尺寸的表现
+
+### 本地运行演示
+
+```bash
+# 克隆仓库
+git clone https://github.com/xbghc/vue-ui.git
+cd vue-ui
+
+# 安装依赖
+npm install
+
+# 启动 Storybook
+npm run storybook
+```
+
+## 🎯 项目兼容性
+
+### 框架兼容
+
+- **Vue Router**: 组件库与路由完全兼容
+- **Pinia/Vuex**: 可在状态管理中正常使用
+- **Nuxt.js**: 支持服务端渲染
+
+### 构建工具支持
+
+- **Vite** ✅ 完全支持
+- **Webpack** ✅ 完全支持
+- **Rollup** ✅ 完全支持
+- **Parcel** ✅ 完全支持
+
+## 🎯 开发哲学
+
+### Modern First, No Legacy Support
+
+本项目优先使用现代 Web 标准，不维护过时版本的向后兼容性。我们使用最新的稳定 API 和特性，不提供传统回退方案。
+
+### 最佳实践
+
+- 使用 Composition API 和 `<script setup>`
+- 完整的 TypeScript 类型支持
+- 遵循 WAI-ARIA 无障碍标准
+- 现代 CSS 特性（CSS 变量、Grid、Flexbox）
+- ES2020+ 语法特性
+
+## 🔧 常见用法模式
+
+### 响应式属性
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { ToolTip } from '@xbghc/vue-ui';
+
+const tooltipContent = ref('动态内容');
+const isDisabled = ref(false);
+</script>
+
+<template>
+  <ToolTip :content="tooltipContent" :disabled="isDisabled">
+    <template #trigger>
+      <button>动态 Tooltip</button>
+    </template>
+  </ToolTip>
+</template>
+```
+
+### 事件处理
+
+```vue
+<script setup lang="ts">
+import { ToolTip } from '@xbghc/vue-ui';
+
+const handleShow = () => {
+  console.log('Tooltip 显示了');
+};
+
+const handleHide = () => {
+  console.log('Tooltip 隐藏了');
+};
+</script>
+
+<template>
+  <ToolTip content="事件演示" @show="handleShow" @hide="handleHide">
+    <template #trigger>
+      <button>事件演示</button>
+    </template>
+  </ToolTip>
+</template>
+```
+
+### 富文本内容
+
+```vue
+<template>
+  <ToolTip>
+    <template #trigger>
+      <button>富文本内容</button>
+    </template>
+    <div style="padding: 4px;">
+      <strong>富文本 Tooltip</strong><br />
+      <span style="color: #ccc;">支持任意 HTML</span>
+    </div>
+  </ToolTip>
+</template>
+```
+
+## 📚 下一步
+
+### 📖 深入学习
+
+- [导入方式](/docs/guide-import-methods--docs) - 了解不同的导入和使用方法
+- [ToolTip 组件](/docs/components-tooltip--docs) - 查看完整 API 文档
+
+### 🛠️ 开发资源
+
+- [GitHub 仓库](https://github.com/xbghc/vue-ui) - 源码和问题反馈
+- [GitHub Issues](https://github.com/xbghc/vue-ui/issues) - 报告问题或提出建议
+- [GitHub Discussions](https://github.com/xbghc/vue-ui/discussions) - 社区讨论和支持
+
+## ❓ 遇到问题？
+
+如果您在使用过程中遇到任何问题，可以：
+
+1. 查看本 Storybook 中的组件文档和示例
+2. 在 [GitHub Issues](https://github.com/xbghc/vue-ui/issues) 中搜索或提交问题
+3. 参与 [GitHub Discussions](https://github.com/xbghc/vue-ui/discussions) 社区讨论
+
+---
+
+⭐ **如果这个项目对您有帮助，请给个 Star 支持一下！**

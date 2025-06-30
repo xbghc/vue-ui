@@ -1,0 +1,286 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Development/Code Standards" />
+
+# 📏 代码规范
+
+本项目使用严格的代码规范确保代码质量和一致性。
+
+## 🛠️ 工具配置
+
+### ESLint
+
+- **版本**: ESLint 9.x (最新扁平配置格式)
+- **配置文件**: `eslint.config.js`
+- **主要规则包**:
+  - `@eslint/js` - JavaScript 基础规则
+  - `eslint-plugin-vue` - Vue 3 专用规则
+  - `@typescript-eslint/*` - TypeScript 规则
+
+### Prettier
+
+- **配置文件**: `.prettierrc`
+- **忽略文件**: `.prettierignore`
+- **主要设置**:
+  - 单引号, 2 空格缩进, 行末分号, 尾随逗号
+
+### EditorConfig
+
+- **配置文件**: `.editorconfig`
+- **统一设置**: 编码、换行符、缩进等基础格式
+
+## 🎯 可用命令
+
+### 代码检查
+
+```bash
+# 运行 ESLint 检查
+npm run lint
+
+# 自动修复 ESLint 问题
+npm run lint:fix
+
+# 检查 Prettier 格式
+npm run format:check
+
+# 自动格式化代码
+npm run format
+
+# TypeScript 类型检查
+npm run type-check
+```
+
+### 组合命令
+
+```bash
+# 完整检查 (类型 + lint + 格式)
+npm run check
+
+# 自动修复所有问题
+npm run fix
+```
+
+## 🖥️ VSCode 任务
+
+项目配置了 VSCode 任务，可通过 `Ctrl+Shift+P` → "Tasks: Run Task" 访问：
+
+- 🔧 代码检查 (ESLint)
+- 🔧 修复代码问题 (ESLint)
+- 💅 代码格式化 (Prettier)
+- 💅 检查代码格式 (Prettier)
+- ✅ 完整代码检查
+- 🛠️ 修复所有问题
+
+## 📋 核心规则
+
+### Vue 组件规则
+
+- ✅ 组件名使用 PascalCase
+- ✅ 模板中组件使用 PascalCase
+- ✅ 事件名使用 camelCase
+- ✅ 必须显式声明 emits
+- ✅ 代码块顺序: template → script → style
+- ✅ 提供无障碍访问支持
+
+### TypeScript 规则
+
+- ⚠️ 避免使用 `any` 类型 (警告)
+- ❌ 禁止未使用变量 (除 `_` 开头)
+- ✅ 推荐使用 const 而非 let
+
+### 代码格式规则
+
+- ✅ 使用单引号
+- ✅ 语句末尾分号
+- ✅ 多行时尾随逗号
+- ✅ 2 空格缩进
+- ✅ 文件末尾换行
+- ✅ 箭头函数间距
+
+### 生产环境
+
+- ⚠️ console 语句 (生产环境警告)
+- ❌ debugger 语句 (生产环境错误)
+
+## 🗂️ 文件类型配置
+
+### Storybook 文件 (`*.stories.ts`)
+
+- 允许 console 输出
+- 允许 any 类型
+- 提供 browser 全局变量
+
+### 配置文件 (`vite.config.*`, `.storybook/**/*`)
+
+- 允许 console 输出
+- 允许 Node.js 变量 (process 等)
+- 允许 require 语法
+
+### 忽略文件
+
+- `dist/` - 构建输出
+- `node_modules/` - 依赖包
+- `storybook-static/` - Storybook 构建
+- `**/*.d.ts` - 类型声明文件
+
+## 💡 最佳实践
+
+### 开发工作流
+
+1. **实时检查**: 编写代码时 IDE 会自动显示 lint 错误
+2. **提交前检查**: 运行 `npm run check` 确保代码质量
+3. **自动修复**: 使用 `npm run fix` 自动修复格式问题
+4. **手动修复**: 类型错误需要手动修复
+
+### 代码质量
+
+- 优先使用 TypeScript 类型而非 any
+- 遵循 Vue 3 Composition API 最佳实践
+- 保持代码可读性和一致性
+- 避免复杂的嵌套结构
+
+### 团队协作
+
+- 所有代码必须通过 lint 检查
+- 使用统一的代码格式
+- 注释使用中文，变量名使用英文
+- 提交信息遵循约定式提交格式
+
+## 🎯 开发哲学
+
+### Modern First, No Legacy Support
+
+本项目优先使用现代 Web 标准，不维护过时版本的向后兼容性：
+
+- **ES2020+ 语法特性** - 不提供传统回退方案
+- **现代 CSS 特性** - CSS 变量、Grid、Flexbox
+- **最新 Vue 3 API** - Composition API、`<script setup>`
+- **现代构建工具** - Vite、ESM、TypeScript
+
+### 代码风格要求
+
+```vue
+<!-- ✅ 推荐的 Vue 组件结构 -->
+<template>
+  <div class="component-name">
+    <slot name="trigger" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import type { ComponentProps } from './types';
+
+// Props 和 Emits
+const props = defineProps<ComponentProps>();
+const emit = defineEmits<{
+  show: [];
+  hide: [];
+}>();
+
+// 响应式数据
+const isVisible = ref(false);
+
+// 计算属性
+const classes = computed(() => ({
+  'component-name--visible': isVisible.value,
+}));
+
+// 方法
+const show = () => {
+  isVisible.value = true;
+  emit('show');
+};
+</script>
+
+<style scoped lang="scss">
+.component-name {
+  /* 使用 CSS 变量 */
+  background: var(--component-bg-color, #fff);
+
+  &--visible {
+    opacity: 1;
+  }
+}
+</style>
+```
+
+### TypeScript 最佳实践
+
+```typescript
+// ✅ 推荐的类型定义
+export interface ComponentProps {
+  content: string;
+  placement: 'top' | 'bottom' | 'left' | 'right';
+  disabled?: boolean;
+}
+
+// ✅ 推荐的枚举定义
+export enum Placement {
+  Top = 'top',
+  Bottom = 'bottom',
+  Left = 'left',
+  Right = 'right',
+}
+
+// ✅ 推荐的工具类型
+export type ComponentEmits = {
+  show: [];
+  hide: [];
+};
+```
+
+## 📁 配置文件概览
+
+```
+.
+├── eslint.config.js     # ESLint 9.x 配置
+├── .prettierrc          # Prettier 格式化配置
+├── .prettierignore      # Prettier 忽略文件
+├── .editorconfig        # 编辑器基础配置
+└── .vscode/
+    └── tasks.json       # VSCode 任务配置
+```
+
+## 🚀 Git Hooks
+
+项目使用 Git Hooks 确保代码质量：
+
+### Pre-commit
+
+- 自动运行 `npm run check`
+- 确保提交的代码符合规范
+- 防止低质量代码进入仓库
+
+### 提交信息规范
+
+使用约定式提交格式：
+
+```bash
+# 功能添加
+feat: 添加新的组件功能
+
+# 问题修复
+fix: 修复组件样式问题
+
+# 文档更新
+docs: 更新 API 文档
+
+# 代码重构
+refactor: 重构组件逻辑
+
+# 性能优化
+perf: 优化组件渲染性能
+
+# 测试相关
+test: 添加组件测试用例
+
+# 构建相关
+build: 更新构建配置
+```
+
+## 📚 相关文档
+
+- [开发环境搭建](/docs/development-setup--docs) - 本地开发配置
+- [贡献指南](/docs/development-contributing--docs) - 如何参与项目开发
+- [Storybook 指南](/docs/development-storybook--docs) - Storybook 开发说明

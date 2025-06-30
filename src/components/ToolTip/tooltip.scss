@@ -1,0 +1,188 @@
+// ToolTip Component Styles
+//
+// Features:
+// - Support for 12 placement positions with arrows
+// - Smooth fade in/out animations
+// - Responsive design
+// - High contrast and accessibility support
+
+/* ===== Base Container ===== */
+.tooltip-container {
+  display: inline-block;
+  position: relative;
+}
+
+.tooltip-trigger {
+  display: inline-block;
+}
+
+/* ===== Main Styles ===== */
+.tooltip-overlay {
+  position: absolute;
+  z-index: 1000;
+  max-width: 300px;
+  padding: 0;
+  pointer-events: auto;
+
+  /* Ensure not covered by other elements when teleported to body */
+  top: 0;
+  left: 0;
+}
+
+.tooltip-content {
+  background: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  /* Prevent text selection */
+  user-select: none;
+}
+
+/* ===== Animation Effects ===== */
+.tooltip-fade-enter-active,
+.tooltip-fade-leave-active {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tooltip-fade-enter-from,
+.tooltip-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateY(-2px);
+}
+
+.tooltip-fade-enter-to,
+.tooltip-fade-leave-from {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ===== Arrow Styles ===== */
+
+/* Base arrow styles when show-arrow is true */
+.tooltip-overlay[data-show-arrow='true'] .tooltip-content::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+}
+
+/* Top position arrows */
+.tooltip-overlay[data-placement^='top'][data-show-arrow='true'] .tooltip-content::before {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: #333;
+  border-bottom: none;
+}
+
+.tooltip-overlay[data-placement='top-start'][data-show-arrow='true'] .tooltip-content::before {
+  left: 12px;
+  transform: none;
+}
+
+.tooltip-overlay[data-placement='top-end'][data-show-arrow='true'] .tooltip-content::before {
+  left: auto;
+  right: 12px;
+  transform: none;
+}
+
+/* Bottom position arrows */
+.tooltip-overlay[data-placement^='bottom'][data-show-arrow='true'] .tooltip-content::before {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: #333;
+  border-top: none;
+}
+
+.tooltip-overlay[data-placement='bottom-start'][data-show-arrow='true'] .tooltip-content::before {
+  left: 12px;
+  transform: none;
+}
+
+.tooltip-overlay[data-placement='bottom-end'][data-show-arrow='true'] .tooltip-content::before {
+  left: auto;
+  right: 12px;
+  transform: none;
+}
+
+/* Left position arrows */
+.tooltip-overlay[data-placement^='left'][data-show-arrow='true'] .tooltip-content::before {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: #333;
+  border-right: none;
+}
+
+.tooltip-overlay[data-placement='left-start'][data-show-arrow='true'] .tooltip-content::before {
+  top: 12px;
+  transform: none;
+}
+
+.tooltip-overlay[data-placement='left-end'][data-show-arrow='true'] .tooltip-content::before {
+  top: auto;
+  bottom: 12px;
+  transform: none;
+}
+
+/* Right position arrows */
+.tooltip-overlay[data-placement^='right'][data-show-arrow='true'] .tooltip-content::before {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: #333;
+  border-left: none;
+}
+
+.tooltip-overlay[data-placement='right-start'][data-show-arrow='true'] .tooltip-content::before {
+  top: 12px;
+  transform: none;
+}
+
+.tooltip-overlay[data-placement='right-end'][data-show-arrow='true'] .tooltip-content::before {
+  top: auto;
+  bottom: 12px;
+  transform: none;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .tooltip-overlay {
+    max-width: 250px;
+  }
+
+  .tooltip-content {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+}
+
+/* ===== High Contrast Support ===== */
+@media (prefers-contrast: high) {
+  .tooltip-content {
+    background: #000;
+    border: 1px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .tooltip-overlay[data-show-arrow='true'] .tooltip-content::before {
+    border-top-color: #000;
+    border-bottom-color: #000;
+    border-left-color: #000;
+    border-right-color: #000;
+  }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  .tooltip-overlay {
+    display: none !important;
+  }
+}
