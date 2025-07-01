@@ -28,11 +28,11 @@ const preview: Preview = {
         order: [
           'Guide',
           ['Installation', 'Getting Started', 'Import Methods', 'Changelog'],
-          'Components', 
-          ['ToolTip'], 
+          'Components',
+          ['ToolTip'],
           'Development',
           ['Setup', 'Code Standards', 'Contributing', 'Storybook Guide'],
-          '*'
+          '*',
         ],
       },
     },

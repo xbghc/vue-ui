@@ -74,7 +74,7 @@ import { ToolTip } from '@xbghc/vue-ui';
 
 ### ToolTip 工具提示
 
-功能完整的工具提示组件，支持多种位置和自定义样式。
+工具提示组件，支持多种位置和自定义样式。
 
 ```vue
 <ToolTip content="提示内容" placement="top" :show-arrow="true">

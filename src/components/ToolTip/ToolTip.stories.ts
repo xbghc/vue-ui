@@ -9,7 +9,7 @@ const meta: Meta<typeof ToolTip> = {
     layout: 'centered',
     docs: {
       description: {
-        component: '一个功能完整的工具提示组件，支持多种位置、自定义样式和延迟显示。',
+        component: '工具提示组件，支持多种位置、自定义样式和延迟显示。',
       },
     },
   },
