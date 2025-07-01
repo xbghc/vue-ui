@@ -40,6 +40,7 @@
     "type-check": "vue-tsc --noEmit --skipLibCheck",
     "check": "npm run type-check && npm run lint && npm run format:check",
     "fix": "npm run lint:fix && npm run format",
+    "generate:component": "node scripts/generate-component.js",
     "docs:generate": "node scripts/generate-docs.js",
     "docs:validate": "echo 'TODO: Add docs validation script'",
     "preview": "vite preview"
