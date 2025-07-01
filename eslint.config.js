@@ -4,6 +4,7 @@ import typescript from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import vueParser from 'vue-eslint-parser';
 import globals from 'globals';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   // 基础JavaScript推荐配置
@@ -11,6 +12,9 @@ export default [
 
   // Vue推荐配置
   ...vue.configs['flat/recommended'],
+
+  // Prettier配置 - 禁用与Prettier冲突的规则
+  prettierConfig,
 
   // 项目配置
   {
@@ -76,21 +80,6 @@ export default [
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-template': 'error',
-      'template-curly-spacing': 'error',
-      'arrow-spacing': 'error',
-      'comma-dangle': ['error', 'always-multiline'],
-      'eol-last': 'error',
-      indent: ['error', 2, { SwitchCase: 1 }],
-      quotes: ['error', 'single', { avoidEscape: true }],
-      semi: ['error', 'always'],
-      'space-before-function-paren': [
-        'error',
-        {
-          anonymous: 'always',
-          named: 'never',
-          asyncArrow: 'always',
-        },
-      ],
     },
   },
 
