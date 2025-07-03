@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -28,178 +28,32 @@ function formatComponentName(name) {
 }
 
 /**
+ * 从模板文件读取内容并替换占位符
+ */
+function loadTemplate(templateName, names) {
+  const templatePath = join(__dirname, 'templates', `${templateName}.template`);
+  const template = readFileSync(templatePath, 'utf8');
+  
+  // 替换所有占位符
+  return template
+    .replace(/\{\{pascal\}\}/g, names.pascal)
+    .replace(/\{\{kebab\}\}/g, names.kebab)
+    .replace(/\{\{lower\}\}/g, names.lower);
+}
+
+/**
  * 生成组件模板
  */
 function generateTemplates(componentName) {
   const names = formatComponentName(componentName);
 
   const templates = {
-    // 主组件文件
-    vue: `<template>
-  <div class="${names.kebab}">
-    <slot />
-  </div>
-</template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-import { ${names.lower}Props, ${names.lower}Emits } from './${names.kebab}-types';
-import { use${names.pascal} } from './use-${names.kebab}';
-
-defineOptions({
-  name: '${names.pascal}',
-});
-
-const props = defineProps(${names.lower}Props);
-const emit = defineEmits<${names.lower}Emits>();
-
-const { /* 在这里解构 composable 返回的响应式数据和方法 */ } = use${names.pascal}(props, emit);
-</script>
-
-<!-- 
-  样式文件位置: src/components/${names.pascal}/${names.kebab}.scss
-  全局样式入口: src/styles/index.scss
--->
-`,
-
-    // 类型定义文件
-    types: `import type { ExtractPropTypes, PropType } from 'vue';
-
-/**
- * ${names.pascal} 组件属性定义
- */
-export const ${names.lower}Props = {
-  // 在这里定义组件的 props
-  // 示例:
-  // /** 是否禁用 */
-  // disabled: {
-  //   type: Boolean,
-  //   default: false,
-  // },
-} as const;
-
-/**
- * ${names.pascal} 组件事件定义
- */
-export const ${names.lower}Emits = [
-  // 在这里定义组件的事件
-  // 示例: 'click', 'change'
-];
-
-/**
- * ${names.pascal} 组件属性类型
- */
-export type ${names.pascal}Props = ExtractPropTypes<typeof ${names.lower}Props>;
-
-/**
- * ${names.pascal} 组件事件类型
- */
-export type ${names.pascal}Emits = typeof ${names.lower}Emits;
-`,
-
-    // Composable 文件
-    composable: `import type { ${names.pascal}Props, ${names.pascal}Emits } from './${names.kebab}-types';
-
-/**
- * ${names.pascal} 组件的组合式函数
- * @param props - 组件属性
- * @param emit - 事件发射器
- */
-export function use${names.pascal}(
-  props: ${names.pascal}Props,
-  emit: (event: any, ...args: any[]) => void,
-) {
-  // 在这里实现组件的逻辑
-  
-  // 返回需要在组件中使用的响应式数据和方法
-  return {
-    // 示例返回值
-  };
-}
-`,
-
-    // 样式文件
-    scss: `.${names.kebab} {
-  // 在这里添加组件的样式
-  
-  // 示例:
-  // display: block;
-  // padding: 8px;
-}
-`,
-
-    // Storybook 故事文件
-    stories: `import type { Meta, StoryObj } from '@storybook/vue3';
-import ${names.pascal} from './${names.pascal}.vue';
-
-const meta = {
-  title: 'Components/${names.pascal}',
-  component: ${names.pascal},
-  parameters: {
-    layout: 'centered',
-    docs: {
-      description: {
-        component: '${names.pascal} 组件的描述',
-      },
-    },
-  },
-  tags: ['autodocs'],
-  argTypes: {
-    // 在这里定义 Storybook 控件
-  },
-} satisfies Meta<typeof ${names.pascal}>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
-  args: {
-    // 默认参数
-  },
-};
-
-export const Example: Story = {
-  args: {
-    // 示例参数
-  },
-  render: (args) => ({
-    components: { ${names.pascal} },
-    setup() {
-      return { args };
-    },
-    template: \`
-      <${names.pascal} v-bind="args">
-        示例内容
-      </${names.pascal}>
-    \`,
-  }),
-};
-`,
-
-    // 导出文件
-    index: `import type { App } from 'vue';
-import ${names.pascal} from './${names.pascal}.vue';
-
-// 按需导入时引入样式
-// 样式由全局样式文件引入: src/styles/index.scss
-
-/**
- * 为 ${names.pascal} 组件添加全局安装方法
- */
-${names.pascal}.install = (app: App) => {
-  app.component('${names.pascal}', ${names.pascal});
-};
-
-// ===== 组件导出 =====
-export { ${names.pascal} };
-export default ${names.pascal};
-
-// ===== 类型导出 =====
-export type { ${names.pascal}Props, ${names.pascal}Emits } from './${names.kebab}-types';
-
-// ===== Hooks 导出 =====
-export { use${names.pascal} } from './use-${names.kebab}';
-`,
+    vue: loadTemplate('vue', names),
+    types: loadTemplate('types', names),
+    composable: loadTemplate('composable', names),
+    scss: loadTemplate('scss', names),
+    stories: loadTemplate('stories', names),
+    index: loadTemplate('index', names),
   };
 
   return templates;

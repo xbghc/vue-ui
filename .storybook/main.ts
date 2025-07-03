@@ -11,18 +11,19 @@ const config: StorybookConfig = {
     name: '@storybook/vue3-vite',
     options: {},
   },
+  staticDirs: ['../public'],
   docs: {
     autodocs: 'tag',
   },
   typescript: {
     check: false,
-    reactDocgen: 'react-docgen-typescript',
-    reactDocgenTypescriptOptions: {
-      shouldExtractLiteralValuesFromEnum: true,
-      propFilter: prop => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
-    },
   },
   viteFinal: config => {
+    // 配置GitHub Pages的基础路径
+    if (process.env.NODE_ENV === 'production') {
+      config.base = '/vue-ui/';
+    }
+    
     // Ensure Vite can handle .vue files
     return config;
   },

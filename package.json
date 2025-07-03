@@ -30,7 +30,7 @@
     "storybook": "storybook dev -p 6006",
     "build": "vue-tsc --noEmit && vite build",
     "build:watch": "vite build --watch",
-    "build-storybook": "storybook build",
+    "build-storybook": "NODE_ENV=production storybook build",
     "deploy-storybook": "npm run build-storybook && gh-pages -d storybook-static",
     "clean": "rm -rf dist storybook-static",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx",
